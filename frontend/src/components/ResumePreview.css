@@ -1,0 +1,103 @@
+/* ResumePreview.css - Professional Single Page ATS Template */
+
+.resume-preview-wrapper {
+  background-color: #f3f4f6;
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+}
+
+/* A4 page simulation */
+.resume-preview-page.a4-format {
+  width: 210mm;
+  min-height: 297mm;
+  background-color: white;
+  padding: 20mm 20mm; /* Standard 1-inch margins */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; /* Best ATS fonts */
+  color: #000000;
+  line-height: 1.4;
+  box-sizing: border-box;
+}
+
+/* Hide shadow when printing to PDF */
+@media print {
+  .resume-preview-wrapper {
+    background-color: transparent;
+    padding: 0;
+  }
+  .resume-preview-page.a4-format {
+    box-shadow: none;
+    padding: 0;
+    width: 100%;
+  }
+}
+
+/* Typography styles matching professional templates */
+.resume-name {
+  font-size: 24pt;
+  font-weight: 700;
+  text-align: center;
+  color: #111827;
+  margin-top: 0;
+  margin-bottom: 8pt;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.resume-section-title {
+  font-size: 13pt;
+  font-weight: 700;
+  color: #111827;
+  border-bottom: 1.5px solid #374151;
+  margin-top: 14pt;
+  margin-bottom: 8pt;
+  padding-bottom: 3px;
+  text-transform: uppercase;
+}
+
+.resume-subsection-title {
+  font-size: 11pt;
+  font-weight: 700;
+  color: #1f2937;
+  margin-top: 8pt;
+  margin-bottom: 2pt;
+}
+
+.resume-text-block {
+  font-size: 10.5pt;
+  color: #374151;
+  margin-top: 0;
+  margin-bottom: 6pt;
+  text-align: justify;
+}
+
+.resume-list {
+  margin-top: 4pt;
+  margin-bottom: 8pt;
+  padding-left: 18pt;
+}
+
+.resume-list-item {
+  font-size: 10.5pt;
+  color: #374151;
+  margin-bottom: 3pt;
+  position: relative;
+}
+
+.resume-list-item::marker {
+  color: #4b5563;
+}
+
+.resume-bold {
+  font-weight: 600;
+  color: #111827;
+}
+
+/* Special header lines matching typically contact info */
+.resume-text-block:nth-of-type(1) {
+  text-align: center;
+  margin-bottom: 12pt;
+}
