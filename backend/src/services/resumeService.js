@@ -2,6 +2,25 @@ const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
 
+function validateInputs(resumeText = '', jobDescription = '', instruction = '') {
+  if (resumeText && resumeText.length > 15000) {
+    throw new Error('Resume text exceeds 15,000 character limit.');
+  }
+  if (jobDescription && jobDescription.length > 10000) {
+    throw new Error('Job description exceeds 10,000 character limit.');
+  }
+  if (instruction && instruction.length > 500) {
+    throw new Error('Instruction exceeds 500 character limit.');
+  }
+  
+  const maliciousPattern = /ignore previous instructions/i;
+  if ((resumeText && maliciousPattern.test(resumeText)) ||
+      (jobDescription && maliciousPattern.test(jobDescription)) ||
+      (instruction && maliciousPattern.test(instruction))) {
+    throw new Error('Invalid input detected. Prompt injection patterns are not allowed.');
+  }
+}
+
 function writeLog(type, content) {
   const logPath = path.join(__dirname, '../../resume.log');
   const timestamp = new Date().toISOString();
@@ -12,15 +31,18 @@ function writeLog(type, content) {
 }
 
 async function tailorResumeWithGroq(resumeText, jobDescription) {
+  validateInputs(resumeText, jobDescription);
+  
   const prompt = `You are an expert ATS resume writer. Your task is to extract, rewrite, and format a highly optimized, tailored resume.
 
 CRITICAL INSTRUCTIONS:
 1. Extract ALL contact information (Name, Email, Phone, Location, LinkedIn, Portfolio/GitHub) from the Candidate Resume and format it exactly at the very top.
 2. The Name MUST be formatted as an H1 markdown element (\`# First Last\`).
 3. Below the name, list the contact details separated by a bullet or pipe (\`•\` or \`|\`).
-4. Improve the summary, skills, and experience sections to strongly align with the Job Description keywords and requirements.
-5. Provide ONLY the finalized resume in markdown format. DO NOT provide any conversational filler like "Here is the summary" or "Note: this resume has been improved".
-6. Do NOT include any markdown code blocks (e.g., do not wrap the response in \`\`\`markdown \`\`\`). Just output the raw markdown text.
+4. Improve the summary, skills, and experience sections to strongly align with the Job Description keywords and requirements. Use strong action verbs and quantify achievements.
+5. Do NOT invent experience or skills the candidate doesn't have.
+6. Provide ONLY the finalized resume in markdown format. DO NOT provide any conversational filler like "Here is the summary" or "Note: this resume has been improved".
+7. Do NOT include any markdown code blocks (e.g., do not wrap the response in \`\`\`markdown \`\`\`). Just output the raw markdown text.
 
 --- Job Description ---
 ${jobDescription}
@@ -41,7 +63,7 @@ ${resumeText}`;
           { role: 'user', content: prompt }
         ],
         temperature: 0.7,
-        max_tokens: 2000
+        max_tokens: 4096
       },
       {
         headers: {
@@ -112,13 +134,16 @@ ${jobKeywords.slice(0, 5).map(keyword => `• ${keyword}`).join('\n')}
 }
 
 async function refineResumeWithGroq(currentResume, instruction) {
+  validateInputs(currentResume, '', instruction);
+
   const prompt = `You are an expert ATS resume writer. I am going to provide you with a currently drafted resume, and a specific user instruction on how to change it.
 
 CRITICAL INSTRUCTIONS:
 1. Apply the user's specific instruction to the resume. 
 2. Retain the exact same markdown formatting as the original draft (H1 for name, bullets for contact info, H2 for sections, etc.) unless the user's instruction explicitly asks you to change the format.
-3. Provide ONLY the finalized, updated resume in markdown format. DO NOT provide any conversational filler.
-4. Do NOT include any markdown code blocks (e.g., do not wrap the response in \`\`\`markdown \`\`\`). Just output the raw markdown text.
+3. Do NOT invent experience or skills the candidate doesn't have.
+4. Provide ONLY the finalized, updated resume in markdown format. DO NOT provide any conversational filler.
+5. Do NOT include any markdown code blocks (e.g., do not wrap the response in \`\`\`markdown \`\`\`). Just output the raw markdown text.
 
 --- User Instruction/Refinement ---
 ${instruction}
@@ -139,7 +164,7 @@ ${currentResume}`;
           { role: 'user', content: prompt }
         ],
         temperature: 0.7,
-        max_tokens: 2000
+        max_tokens: 4096
       },
       {
         headers: {
@@ -161,12 +186,19 @@ ${currentResume}`;
 }
 
 async function scoreResumeWithGroq(resumeText, jobDescription) {
+  validateInputs(resumeText, jobDescription);
+
   const prompt = `You are an expert ATS (Applicant Tracking System) algorithm.
 I will provide a Candidate Resume and a Target Job Description.
 You must analyze how well the resume matches the job description and return ONLY a valid JSON object with the following exact structure (no markdown blocks or other text):
 
 {
   "score": <a number between 0 and 100 representing the match percentage>,
+  "summary": "<a one-line summary of the candidate's fit>",
+  "strengths": [
+    "<strength 1>",
+    "<strength 2>"
+  ],
   "missingKeywords": [
     "<keyword 1 that the job requires but candidate is missing>",
     "<keyword 2>",
@@ -214,6 +246,8 @@ ${resumeText}`;
 }
 
 async function generateCoverLetterWithGroq(resumeText, jobDescription) {
+  validateInputs(resumeText, jobDescription);
+
   const prompt = `You are an expert executive career coach and resume writer.
 I will provide a Candidate Resume and a Target Job Description. 
 You must write a highly professional, compelling, and tailored 1-page Cover Letter for this candidate applying to this specific job.

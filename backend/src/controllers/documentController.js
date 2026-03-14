@@ -14,7 +14,7 @@ const uploadResume = async (req, res) => {
         res.json({ text: extractedText });
     } catch (error) {
         console.error('Upload Error:', error);
-        res.status(500).json({ error: error.message || 'Failed to process document.' });
+        res.status(400).json({ error: error.message || 'Failed to process document.' });
     }
 };
 

@@ -13,7 +13,7 @@ export function InputSection({
         if (!file) return;
 
         // Basic validation
-        if (file.type !== 'application/pdf' && 
+        if (file.type !== 'application/pdf' &&
             file.type !== 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' &&
             file.type !== 'application/msword') {
             alert('Please upload a valid PDF or DOCX file.');
@@ -37,10 +37,10 @@ export function InputSection({
 
             const data = await response.json();
             setResumeText(data.text);
-            
+
             // Clear input so same file can be uploaded again if needed
             if (fileInputRef.current) fileInputRef.current.value = '';
-            
+
         } catch (error) {
             console.error('File Upload Error:', error);
             alert(error.message);
@@ -76,17 +76,17 @@ export function InputSection({
                 </div>
                 <div className="card-body">
                     <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '0.75rem' }}>
-                        <input 
-                            type="file" 
-                            accept=".pdf,.doc,.docx" 
-                            ref={fileInputRef} 
-                            style={{ display: 'none' }} 
+                        <input
+                            type="file"
+                            accept=".pdf,.doc,.docx"
+                            ref={fileInputRef}
+                            style={{ display: 'none' }}
                             onChange={handleFileUpload}
                         />
-                        <button 
+                        <button
                             onClick={() => fileInputRef.current?.click()}
                             disabled={isUploading}
-                            className="action-button" 
+                            className="action-button"
                             style={{ background: '#f3f4f6', color: '#374151', border: '1px solid #d1d5db' }}
                         >
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ width: '1rem', height: '1rem', marginRight: '0.5rem' }}>

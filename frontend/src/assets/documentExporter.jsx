@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import jsPDF from 'jspdf';
 import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType, UnderlineType } from 'docx';
+import html2pdf from 'html2pdf.js';
 
 // ATS-Optimized formatting configurations
 const ATS_CONFIG = {
@@ -448,7 +449,7 @@ function parseResumeContent(resumeText) {
   return sections;
 }
 
-import html2pdf from 'html2pdf.js';
+
 
 async function generatePDF(resumeText, filename, resumeElement) {
   try {

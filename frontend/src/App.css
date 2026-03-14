@@ -1,3 +1,25 @@
+html {
+  color-scheme: light;
+}
+
+:root {
+  --color-primary: #2563eb;
+  --color-primary-hover: #1d4ed8;
+  --color-secondary: #4338ca;
+  --color-text: #1f2937;
+  --color-text-light: #6b7280;
+  --color-border: #e5e7eb;
+  --color-bg: #f8fafc;
+  --color-success: #10b981;
+  --color-success-bg: #ecfdf5;
+  --color-warning: #f59e0b;
+  --color-warning-bg: #fef3c7;
+  --color-error: #ef4444;       
+  --color-error-bg: #fef2f2;    
+  --color-info: #3b82f6;        
+  --color-info-bg: #eff6ff;     
+}
+
 /* Reset and Base Styles */
 * {
   margin: 0;
@@ -21,7 +43,10 @@ body {
 .navbar {
   background: white;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .nav-container {
@@ -153,6 +178,7 @@ body {
   .main-title {
     font-size: 2rem;
   }
+
   .main-description {
     font-size: 1.125rem;
   }
@@ -376,8 +402,13 @@ body {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .loading-text {
@@ -555,11 +586,13 @@ body {
 .action-buttons {
   display: flex;
   gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
 .action-button {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   padding: 0.5rem 1rem;
   font-weight: 500;
   border: none;
@@ -568,6 +601,7 @@ body {
   transition: all 0.2s ease;
   font-size: 0.875rem;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  flex: 1 1 auto;
 }
 
 .action-button:hover {
@@ -897,30 +931,146 @@ body {
   .main-container {
     padding: 0 1rem 2rem;
   }
-  
+
   .card-header {
     flex-direction: column;
     gap: 1rem;
   }
-  
+
   .word-counter {
     text-align: left;
   }
-  
+
   .results-header {
     padding: 1.5rem;
   }
-  
+
   .results-content {
     padding: 1.5rem;
   }
-  
+
   .results-footer {
     padding: 1.5rem;
   }
-  
+
   .footer-legal {
     flex-direction: column;
     gap: 0.5rem;
+  }
+}
+
+/* Notification System */
+.notifications-wrapper {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  z-index: 9999;
+}
+
+.notification-toast {
+  display: flex;
+  align-items: flex-start;
+  padding: 1rem 1.25rem;
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border-left: 4px solid var(--color-border);
+  min-width: 300px;
+  max-width: 400px;
+  animation: slideIn 0.3s ease-out forwards;
+}
+
+.notification-toast.closing {
+  animation: slideOut 0.3s ease-in forwards;
+}
+
+.notification-toast.success {
+  border-left-color: var(--color-success);
+}
+
+.notification-toast.error {
+  border-left-color: var(--color-error);
+}
+
+.notification-toast.warning {
+  border-left-color: var(--color-warning);
+}
+
+.notification-toast.info {
+  border-left-color: var(--color-info);
+}
+
+.notification-icon {
+  flex-shrink: 0;
+  margin-right: 0.75rem;
+}
+
+.notification-toast.success .notification-icon {
+  color: var(--color-success);
+}
+
+.notification-toast.error .notification-icon {
+  color: var(--color-error);
+}
+
+.notification-toast.warning .notification-icon {
+  color: var(--color-warning);
+}
+
+.notification-toast.info .notification-icon {
+  color: var(--color-info);
+}
+
+.notification-content {
+  flex: 1;
+}
+
+.notification-title {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--color-text);
+  margin-bottom: 0.25rem;
+}
+
+.notification-message {
+  font-size: 0.875rem;
+  color: var(--color-text-light);
+}
+
+.notification-close {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 0.75rem;
+}
+
+.notification-close:hover {
+  color: var(--color-text);
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(120%);
+    opacity: 0;
   }
 }

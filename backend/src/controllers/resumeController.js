@@ -9,18 +9,21 @@ const tailorResume = async (req, res) => {
 
     try {
         let tailoredResume;
+        let scoreData;
         const API_PROVIDER = process.env.API_PROVIDER || 'groq';
 
         switch (API_PROVIDER.toLowerCase()) {
             case 'groq':
                 tailoredResume = await tailorResumeWithGroq(resumeText, jobDescription);
+                scoreData = await scoreResumeWithGroq(tailoredResume, jobDescription);
                 break;
             default:
                 // Fallback to a simple template-based approach if no API is available
                 tailoredResume = generateBasicTailoredResume(resumeText, jobDescription);
+                scoreData = { score: 75, summary: 'Used fallback optimization', strengths: ['Followed template'], missingKeywords: [] };
         }
 
-        res.json({ output: tailoredResume });
+        res.json({ output: tailoredResume, scoreData });
     } catch (error) {
         console.error('API Error:', error);
 
@@ -28,6 +31,7 @@ const tailorResume = async (req, res) => {
         const fallbackResume = generateBasicTailoredResume(resumeText, jobDescription);
         res.json({
             output: fallbackResume,
+            scoreData: { score: 75, summary: 'Used fallback optimization due to API error', strengths: [], missingKeywords: [] },
             warning: 'Used fallback method due to API error'
         });
     }
