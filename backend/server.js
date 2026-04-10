@@ -29,6 +29,7 @@ app.use('/', apiRoutes); // Vercel stripped route fallback
 
 const swaggerJsdoc = require('swagger-jsdoc');
 
+const path = require('path');
 const swaggerOptions = {
     definition: {
         openapi: '3.0.0',
@@ -41,7 +42,7 @@ const swaggerOptions = {
             { url: '/api', description: 'API routes' }
         ]
     },
-    apis: [__dirname + '/src/routes/*.js'],
+    apis: [path.resolve(__dirname, './src/routes/*.js').replace(/\\/g, '/')],
 };
 
 const swaggerDocs = swaggerJsdoc(swaggerOptions);
