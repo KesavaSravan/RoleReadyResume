@@ -40,10 +40,10 @@ export function useResumeState() {
   const getApiUrl = (endpoint) => {
     let baseUrl = import.meta.env.VITE_BACKEND_URL || '';
     baseUrl = baseUrl.replace(/\/+$/, ''); // Remove trailing slashes
-    if (baseUrl.endsWith('/api') && endpoint !== 'health') {
+    if (baseUrl.endsWith('/api')) {
         baseUrl = baseUrl.slice(0, -4);
     }
-    return endpoint === 'health' ? `${baseUrl}/health` : `${baseUrl}/api/${endpoint}`;
+    return `${baseUrl}/api/${endpoint}`;
   };
 
   const generate = async (type) => {

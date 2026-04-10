@@ -25,10 +25,26 @@ app.use('/api', apiLimiter);
 // Load Routes
 app.use('/api', apiRoutes);
 
-// Health check endpoint
-app.get('/health', (req, res) => {
-  res.json({ status: 'Server is running!', timestamp: new Date().toISOString() });
-});
+const swaggerUi = require('swagger-ui-express');
+const swaggerJsdoc = require('swagger-jsdoc');
+
+const swaggerOptions = {
+    definition: {
+        openapi: '3.0.0',
+        info: {
+            title: 'RoleReadyResume API',
+            version: '1.0.0',
+            description: 'API Documentation for the Resume Builder and Tailor',
+        },
+        servers: [
+            { url: '/api', description: 'API routes' }
+        ]
+    },
+    apis: [__dirname + '/src/routes/*.js'],
+};
+
+const swaggerDocs = swaggerJsdoc(swaggerOptions);
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // Global Error Handler
 app.use((err, req, res, next) => {
