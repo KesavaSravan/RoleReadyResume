@@ -9,5 +9,5 @@
       "entrypoint": "backend/server.js",
       "routePrefix": "/api"
     }
-  }
+  ]
 }

@@ -30,11 +30,20 @@ export function useResumeState() {
 
   const checkServerStatus = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || ''}/health`);
+      const response = await fetch(getApiUrl('health'));
       setServerStatus(response.ok ? 'online' : 'offline');
     } catch {
       setServerStatus('offline');
     }
+  };
+
+  const getApiUrl = (endpoint) => {
+    let baseUrl = import.meta.env.VITE_BACKEND_URL || '';
+    baseUrl = baseUrl.replace(/\/+$/, ''); // Remove trailing slashes
+    if (baseUrl.endsWith('/api') && endpoint !== 'health') {
+        baseUrl = baseUrl.slice(0, -4);
+    }
+    return endpoint === 'health' ? `${baseUrl}/health` : `${baseUrl}/api/${endpoint}`;
   };
 
   const generate = async (type) => {
@@ -52,7 +61,7 @@ export function useResumeState() {
 
     try {
       const endpoint = type === 'tailor' ? 'tailor-resume' : 'generate-cover-letter';
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || ''}/api/${endpoint}`, {
+      const response = await fetch(getApiUrl(endpoint), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ resumeText, jobDescription }),
@@ -103,7 +112,7 @@ export function useResumeState() {
     setLoadingType('refine');
 
     try {
-        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || ''}/api/refine-resume`, {
+        const response = await fetch(getApiUrl('refine-resume'), {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
