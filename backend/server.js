@@ -42,7 +42,12 @@ app.use((err, req, res, next) => {
 });
 
 // Start the server
-app.listen(PORT, () => {
-  console.log(`✅ Backend server running at http://localhost:${PORT}`);
-  console.log(`📋 Available providers: groq`);
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`✅ Backend server running at http://localhost:${PORT}`);
+    console.log(`📋 Available providers: groq`);
+  });
+}
+
+// Export for Vercel serverless functions
+module.exports = app;

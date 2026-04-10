@@ -30,7 +30,7 @@ export function useResumeState() {
 
   const checkServerStatus = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/health`);
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || ''}/health`);
       setServerStatus(response.ok ? 'online' : 'offline');
     } catch {
       setServerStatus('offline');
@@ -52,7 +52,7 @@ export function useResumeState() {
 
     try {
       const endpoint = type === 'tailor' ? 'tailor-resume' : 'generate-cover-letter';
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/${endpoint}`, {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || ''}/api/${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ resumeText, jobDescription }),
@@ -103,7 +103,7 @@ export function useResumeState() {
     setLoadingType('refine');
 
     try {
-        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/refine-resume`, {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || ''}/api/refine-resume`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

@@ -25,7 +25,7 @@ export function InputSection({
         formData.append('resumeFile', file);
 
         try {
-            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/upload-resume`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL || ''}/api/upload-resume`, {
                 method: 'POST',
                 body: formData,
             });

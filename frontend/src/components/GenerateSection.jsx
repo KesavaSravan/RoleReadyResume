@@ -70,7 +70,7 @@ export function GenerateSection({
               </svg>
               <div className="error-text">
                 <span className="error-title">Backend Server Offline</span>
-                <span className="error-subtitle">Please start the backend server on http://localhost:3001</span>
+                <span className="error-subtitle">Please ensure the backend server is running and accessible.</span>
               </div>
               <button onClick={checkServerStatus} className="retry-button">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
