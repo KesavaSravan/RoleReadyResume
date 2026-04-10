@@ -27,7 +27,6 @@ app.use('/', apiLimiter); // Vercel stripped route fallback
 app.use('/api', apiRoutes);
 app.use('/', apiRoutes); // Vercel stripped route fallback
 
-const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc');
 
 const swaggerOptions = {
@@ -46,8 +45,47 @@ const swaggerOptions = {
 };
 
 const swaggerDocs = swaggerJsdoc(swaggerOptions);
-app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs)); // Vercel stripped route fallback
+
+// Serve the raw swagger JSON
+app.get('/api/docs/swagger.json', (req, res) => res.json(swaggerDocs));
+app.get('/docs/swagger.json', (req, res) => res.json(swaggerDocs));
+
+// Serve Swagger UI using CDN assets (Bypasses Vercel Serverless static file missing bug)
+const swaggerHtml = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RoleReadyResume Interactive API</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css" />
+  <style>
+    body { margin: 0; padding: 0; }
+  </style>
+</head>
+<body>
+  <div id="swagger-ui"></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-standalone-preset.min.js"></script>
+  <script>
+    window.onload = () => {
+      window.ui = SwaggerUIBundle({
+        url: window.location.pathname.includes('/api/') ? '/api/docs/swagger.json' : '/docs/swagger.json',
+        dom_id: '#swagger-ui',
+        presets: [
+          SwaggerUIBundle.presets.apis,
+          SwaggerUIStandalonePreset
+        ],
+        layout: "BaseLayout"
+      });
+    };
+  </script>
+</body>
+</html>
+`;
+
+app.use('/api/docs', (req, res) => res.send(swaggerHtml));
+app.use('/docs', (req, res) => res.send(swaggerHtml));
 
 // Global Error Handler
 app.use((err, req, res, next) => {
