@@ -21,9 +21,11 @@ const apiLimiter = rateLimit({
 app.use(cors());
 app.use(bodyParser.json());
 app.use('/api', apiLimiter);
+app.use('/', apiLimiter); // Vercel stripped route fallback
 
 // Load Routes
 app.use('/api', apiRoutes);
+app.use('/', apiRoutes); // Vercel stripped route fallback
 
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc');
@@ -45,6 +47,7 @@ const swaggerOptions = {
 
 const swaggerDocs = swaggerJsdoc(swaggerOptions);
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs)); // Vercel stripped route fallback
 
 // Global Error Handler
 app.use((err, req, res, next) => {
